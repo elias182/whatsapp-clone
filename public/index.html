@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat en Línea</title>
+  <style>
+    /* Estilos CSS modificados para que se asemejen a WhatsApp Web */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .messageme {
+      background-color: #dcf8c6;
+    }
+    .chat-container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      flex: 0 0 300px;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+    .chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    .chat-input input[type="text"], .chat-input input[type="file"] {
+      padding: 10px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+    }
+    .chat-input button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      outline: none;
+    }
+    .stickers-container {
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    .sticker {
+      width: 80px;
+      height: 80px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .message {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .message img {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+    }
+    .message div {
+      background-color: #dcf8c6;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 60%;
+    }
+    .messageme div {
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="sidebar">
+      <!-- Aquí puedes agregar el menú lateral de salas -->
+      <h2>Salas</h2>
+      <ul id="roomList">
+        <li><a href="#" onclick="joinRoom('sala_general')">Sala General</a></li>
+        <li><a href="#" onclick="joinRoom('sala_amigos')">Sala de Amigos</a></li>
+        <li><a href="#" onclick="joinRoom('sala_trabajo')">Sala de Trabajo</a></li>
+        <!-- Agrega más salas según sea necesario -->
+      </ul>
+
+      <form id="createRoomForm">
+        <input type="text" id="newRoomName" placeholder="Nombre de la sala">
+        <button type="submit">Crear Sala</button>
+      </form>
+    </div>
+    <div class="chat">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Lista de mensajes -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="usernameInput" placeholder="Nombre de Usuario">
+        <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
+        <button onclick="sendMessage()">Enviar</button>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">Subir archivo</button>
+      </div>
+      <div class="stickers-container">
+        <!-- Agrega tus stickers aquí -->
+        <img class="sticker" src="./images/foto1.jpeg" onclick="sendSticker('./images/foto1.jpeg')" alt="ACUM">
+        <img class="sticker" src="./images/nacho.jpg" onclick="sendSticker('./images/nacho.jpg')" alt="nacho">
+        <img class="sticker" src="./images/altoke.jpg" onclick="sendSticker('./images/altoke.jpg')" alt="altoke">
+        <img class="sticker" src="./images/osolove.jpeg" onclick="sendSticker('./images/osolove.jpeg')" alt="osolove">
+        <!-- Agrega más stickers según sea necesario -->
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('chatMessage', message => {
+      appendMessage(message);
+    });
+
+    socket.on('sticker', sticker => {
+      appendSticker(sticker.image);
+    });
+
+    socket.on('userList', userList => {
+      updateUserList(userList);
+    });
+
+    // Ejemplo de cómo un usuario puede unirse a una sala al cargar la página
+joinRoom('sala_general');
+
+    // Enviar evento al servidor para unirse a una sala específica
+function joinRoom(roomName) {
+  socket.emit('joinRoom', roomName);
+}
+
+
+
+    function sendMessage() {
+    const usernameInput = document.getElementById('usernameInput');
+    const messageInput = document.getElementById('messageInput');
+    const username = usernameInput.value;
+    const message = messageInput.value;
+
+    if (!username.trim()) {
+      alert('Por favor, introduce tu nombre de usuario.');
+      return;
+    }
+
+    if (!message.trim()) {
+      alert('Por favor, introduce un mensaje.');
+      return;
+    }
+
+    const chatMessages = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.innerText = `${message}`;
+    div.classList.add('messageme'); 
+    chatMessages.appendChild(div);
+    socket.emit('chatMessage', { username: username, message: message });
+    messageInput.value = '';
+  }
+
+    function sendSticker(stickerUrl) {
+      appendSticker(stickerUrl);
+      socket.emit('sticker', { image: stickerUrl });
+    }
+
+    socket.on('loadMessages', (messages) => {
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.innerHTML = ''; // Limpiar mensajes anteriores
+  messages.forEach(message => {
+    if (message.message) {
+      appendMessage(message);
+    } else if (message.sticker) {
+      appendSticker(message);
+    }
+  });
+});
+
+function appendMessage(message) {
+  const chatMessages = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.innerText = `${message.username}: ${message.message}`;
+  chatMessages.appendChild(div);
+}
+
+function appendSticker(message) {
+  const chatMessages = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  const img = document.createElement('img');
+  img.setAttribute('src', message.sticker);
+  img.setAttribute('alt', 'Sticker');
+  div.appendChild(img);
+  chatMessages.appendChild(div);
+}
+
+    function updateUserList(userList) {
+      const userListElement = document.getElementById('userList');
+      userListElement.innerHTML = '';
+      userList.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user;
+        userListElement.appendChild(li);
+      });
+    }
+
+    function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      // Aquí puedes agregar la lógica para subir el archivo
+      console.log('Archivo seleccionado:', file.name);
+    }
+
+    document.getElementById('createRoomForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Evitar el comportamiento predeterminado de recargar la página
+  
+  const newRoomName = document.getElementById('newRoomName').value.trim(); // Obtener el nombre de la sala ingresado por el usuario
+  
+  if (newRoomName) {
+    // Enviar el nombre de la nueva sala al servidor
+    socket.emit('createRoom', newRoomName);
+  } else {
+    alert('Por favor, introduce un nombre para la sala.');
+  }
+});
+
+// Escuchar el evento de error de creación de sala
+socket.on('roomCreationError', function(errorMessage) {
+  alert(errorMessage); // Mostrar un mensaje de error al usuario
+});
+  </script>
+</body>
+</html>
