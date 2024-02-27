@@ -67,23 +67,25 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('sticker', (data) => {
+    console.log('Sticker recibido:', data.sticker);
+  
+    // Emitir el sticker solo a los clientes dentro de la misma sala
+    socket.broadcast.to(socket.room).emit('stickerMessage', {sticker: data.sticker });
+  
+  });
+
   socket.on('chatMessage', (data) => {
     console.log('Mensaje recibido:', data.message);
-  
-    // Verificar si el mensaje es un sticker o texto
-    if (data.sticker) {
-      // Emitir el sticker solo a los clientes dentro de la misma sala
-      io.to(socket.room).emit('stickerMessage', { username: data.username, sticker: data.sticker });
-    } else {
-      // Emitir el mensaje de texto solo a los clientes dentro de la misma sala
-      io.to(socket.room).emit('chatMessage', { username: data.username, message: data.message });
-    }
-  
+
+    // Emitir el mensaje solo a los clientes dentro de la misma sala
+    io.to(socket.room).emit('chatMessage', { username: data.username, message: data.message });
+
     // Agregar el mensaje al historial de la sala
     if (!rooms[socket.room]) {
-      rooms[socket.room] = [];
+      rooms[socket.room] = new Set();
     }
-    rooms[socket.room].push({ username: data.username, message: data.message, sticker: data.sticker });
+    rooms[socket.room].add({ username: data.username, message: data.message });
   });
 
   socket.on('disconnect', () => {
