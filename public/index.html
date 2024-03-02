@@ -175,6 +175,11 @@
         <input type="text" id="newRoomName" placeholder="Nombre de la sala">
         <button type="submit">Crear Sala</button>
       </form>
+
+      <div id="usuariosConectadosSidebar">
+        Usuarios Conectados:
+        <ul id="usuariosConectadosList"></ul>
+    </div>
     </div>
 
 
@@ -226,6 +231,19 @@
         const desconexion = document.getElementById('desconexion');
         const opcionesChat = document.getElementById('opcionesChat');
         const escribiendoMensaje = document.getElementById('escribiendoMensaje');
+        const usuariosConectadosList = document.getElementById('usuariosConectadosList');
+
+// Actualizar la lista de usuarios conectados cuando se reciba una actualización del servidor
+socket.on('updateUsers', (users) => {
+    // Limpiar la lista antes de actualizarla para evitar duplicados
+    usuariosConectadosList.innerHTML = '';
+    // Agregar cada usuario a la lista como un elemento de lista
+    users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.textContent = user;
+        usuariosConectadosList.appendChild(listItem);
+    });
+});
 
 
         //Selección de avatar
@@ -266,7 +284,7 @@
     let avatarURL = document.getElementById('avatar-image').src;
 
     // Verificar si se ha cargado una imagen de avatar
-    if (avatarURL.trim() === '') {
+    if (!avatarURL) {
         // Si no se ha cargado ninguna imagen, establecer la imagen predeterminada
         avatarURL = 'images/osolove.jpeg'; // Ruta de la imagen predeterminada
     }
