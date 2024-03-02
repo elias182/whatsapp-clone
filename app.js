@@ -4,10 +4,18 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileUpload = require('express-fileupload');
+var session = require('express-session'); // Importa express-session
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// Configura express-session
+app.use(session({
+  secret: 'secret', // Cambia esto por una cadena de texto secreta más segura
+  resave: false,
+  saveUninitialized: true
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +51,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware para pasar el usuario a todas las vistas
+app.use(function(req, res, next) {
+  res.locals.user = req.session.user; // Define una variable local 'user' para todas las vistas
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

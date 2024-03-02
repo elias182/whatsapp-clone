@@ -5,94 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat en Línea</title>
   <style>
-    /* Estilos CSS modificados para que se asemejen a WhatsApp Web */
+    /* Estilos CSS similares a WhatsApp Web */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
-    }
-    .messageme {
-      background-color: #dcf8c6;
-    }
-    .chat-container {
-      display: flex;
-      height: 100vh;
-    }
-    .sidebar {
-      flex: 0 0 300px;
       background-color: #f0f0f0;
-      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
     }
-    .chat {
-      flex: 1;
+    #continfo {
       display: flex;
       flex-direction: column;
-    }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-    .chat-input {
-      display: flex;
       align-items: center;
-      padding: 10px;
-      background-color: #f0f0f0;
+      margin-top: 100px;
     }
-    .chat-input input[type="text"], .chat-input input[type="file"] {
+    #continfo input[type="text"] {
       padding: 10px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 20px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       outline: none;
     }
-    .chat-input button {
+    #continfo input[type="file"] {
+      display: none;
+    }
+    #continfo button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+    }
+    #sidebar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    #avatar-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    #avatar-username {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #avatar-estado {
+      font-size: 14px;
+      color: #555;
+    }
+    #chat {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 50px;
+    }
+    .header {
+      width: 100%;
       background-color: #007bff;
       color: #fff;
       padding: 10px 20px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      outline: none;
+      text-align: center;
     }
-    .stickers-container {
-      display: flex;
-      justify-content: center;
+    #usuariosConectados {
+      margin-bottom: 10px;
+    }
+    #mensajesChat {
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
       padding: 10px;
-      background-color: #f0f0f0;
-    }
-    .sticker {
-      width: 80px;
-      height: 80px;
-      margin: 0 5px;
-      cursor: pointer;
+      background-color: #fff;
+      border-radius: 5px;
     }
     .message {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 10px;
     }
     .message img {
-      width: 60px;
-      height: 60px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
     }
     .message div {
       background-color: #dcf8c6;
       padding: 10px;
       border-radius: 10px;
-      max-width: 60%;
+      max-width: 70%;
     }
     .messageme div {
-      background-color: #fff;
+      background-color: #e1ffc7;
+    }
+    .textyenviar {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .textyenviar input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+    .textyenviar button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+    }
+    .emojis {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .emojis img {
+      width: 40px;
+      height: 40px;
+      margin-right: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="sidebar">
-      <!-- Aquí puedes agregar el menú lateral de salas -->
-      <h2>Salas</h2>
+
+    <div id="continfo">
+        <h4>Escribe tu nombre y selecciona un avatar</h4><br>
+        <input type="text" name="" id="nombreUsuario" placeholder="Tu nombre...">
+        <input type="text" name="" id="estado" value="Using Whats app-clone">
+        <label for="avatarUsuario" class="custom-file-upload">
+             Subir Imagen
+        </label>
+        <input type="file" id="avatarUsuario" accept="image/*" style="display:none;"><br>
+        <br>
+        <button onclick="enviarNick()">Enviar</button>
+
+
+        
+    </div>
+
+     <!-- Contenedor para mostrar la información del avatar -->
+     <div id="sidebar" style="display: none;">
+        <img id="avatar-image" src="avatares/avatardefault.png" alt="Avatar seleccionado">
+        <span id="avatar-username"></span><br>
+        <span id="avatar-estado"></span>
+
+
+        <h2>Salas</h2>
       <ul id="roomList">
         <li><a href="#" onclick="joinRoom('sala_general')">Sala General</a></li>
         <li><a href="#" onclick="joinRoom('sala_amigos')">Sala de Amigos</a></li>
@@ -105,131 +176,303 @@
         <button type="submit">Crear Sala</button>
       </form>
     </div>
-    <div class="chat">
-      <div class="chat-messages" id="chat-messages">
-        <!-- Lista de mensajes -->
-      </div>
-      <div class="chat-input">
-        <input type="text" id="usernameInput" placeholder="Nombre de Usuario">
-        <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
-        <button onclick="sendMessage()">Enviar</button>
-        <input type="file" id="fileInput">
-        <button onclick="uploadFile()">Subir archivo</button>
-      </div>
-      <div class="stickers-container">
-        <!-- Agrega tus stickers aquí -->
-        <img class="sticker" src="./images/foto1.jpeg" onclick="sendSticker('./images/foto1.jpeg')" alt="ACUM">
-        <img class="sticker" src="./images/nacho.jpg" onclick="sendSticker('./images/nacho.jpg')" alt="nacho">
-        <img class="sticker" src="./images/altoke.jpg" onclick="sendSticker('./images/altoke.jpg')" alt="altoke">
-        <img class="sticker" src="./images/osolove.jpeg" onclick="sendSticker('./images/osolove.jpeg')" alt="osolove">
-        <!-- Agrega más stickers según sea necesario -->
-      </div>
+
+
+
+        <div id="chat" style="display: none;">
+            <div>
+            <div class="header">
+                <h1>Chat</h1>
+                <div id="usuariosConectados">Usuarios en linea: </div>
+                <div id="desconexion"></div>
+                <div id="escribiendoMensaje"></div>
+            </div>
+                <div id="mensajesChat"></div>
+            </div>
+
+
+        <div>
+            <div class="posibles-mensajes">
+                <div class="textyenviar">
+                    <input type="text" name="" id="cajaTexto" onkeyup="usuarioEscribiendo()">
+                    <button onclick="enviar()">Enviar</button>
+                </div>
+
+                <div class="emojis">
+                    <img height="40" src="images/altoke.jpg" class="emoji" onclick="enviarEmoji('images/altoke.jpg')">
+                    <img height="40" src="images/nacho.jpg" class="emoji" onclick="enviarEmoji('images/nacho.jpg')">
+                    <img height="40" src="images/osolove.jpeg" class="emoji" onclick="enviarEmoji('images/osolove.jpeg')">
+                    <img height="40" src="images/foto1.jpeg" class="emoji" onclick="enviarEmoji('images/foto1.jpeg')">
+                    
+                </div>
+                <form>
+                    <input type="file" id="sampleFile" name="sampleFile">
+                    <button type="button" id="uploadButton">Upload</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
-  <script>
-    const socket = io();
 
-    socket.on('chatMessage', message => {
-      appendMessage(message);
-    });
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
 
-    socket.on('sticker', sticker => {
-      console.log(stiker.image)
-      appendSticker(sticker.image);
-    });
+        //VARIABLES
+        const socket = io();
+        let typingTimer; 
+        const usuariosConectadosElemento = document.getElementById('usuariosConectados');
+        const mensajesChatContenedor = document.getElementById('mensajesChat');
+        const cajaTextoInput = document.getElementById('cajaTexto');
+        const nombreUsuario = document.getElementById('nombreUsuario');
+        const desconexion = document.getElementById('desconexion');
+        const opcionesChat = document.getElementById('opcionesChat');
+        const escribiendoMensaje = document.getElementById('escribiendoMensaje');
 
-    socket.on('userList', userList => {
-      updateUserList(userList);
-    });
 
-    // Ejemplo de cómo un usuario puede unirse a una sala al cargar la página
-joinRoom('sala_general');
+        //Selección de avatar
+        let avatarSeleccionado = ''; 
 
-    // Enviar evento al servidor para unirse a una sala específica
-function joinRoom(roomName) {
-  socket.emit('joinRoom', roomName);
+        //Control de avatar del ordenador del usuario
+
+        document.getElementById('avatarUsuario').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const avatarImg = document.getElementById('avatar-image');
+            avatarImg.src = e.target.result;
+            avatarImg.style.display = 'inline-block';
+        };
+
+        reader.readAsDataURL(file);
+        });
+
+        //selección de avatar general
+        function seleccionarAvatar(avatar) {
+
+            avatarSeleccionado = avatar;
+            const avatarOptions = document.querySelectorAll('.avatar-option');
+            avatarOptions.forEach(option => option.classList.remove('selected'));
+            const selectedOption = document.querySelector(`.avatar-option[src="${avatar}"]`);
+            selectedOption.classList.add('selected');
+            document.getElementById('avatar-image').src = avatar;
+           
+        }
+
+        //GUARDAR LOS DATOS PRINCIPALES
+
+        function enviarNick() {
+    const nombreUsuario = document.getElementById('nombreUsuario').value;
+    const estado = document.getElementById('estado').value;
+    let avatarURL = document.getElementById('avatar-image').src;
+
+    // Verificar si se ha cargado una imagen de avatar
+    if (avatarURL.trim() === '') {
+        // Si no se ha cargado ninguna imagen, establecer la imagen predeterminada
+        avatarURL = 'images/osolove.jpeg'; // Ruta de la imagen predeterminada
+    }
+
+    if (nombreUsuario.trim() === '') {
+        alert('Por favor introduce un nick antes de enviar.');
+        return;
+    }
+
+    document.getElementById('continfo').style.display = 'none';
+    document.getElementById('sidebar').style.display = 'block';
+
+    document.getElementById('avatar-username').textContent = nombreUsuario;
+    document.getElementById('avatar-image').src = avatarURL; 
+    document.getElementById('avatar-image').style.display = 'inline-block';
+    document.getElementById('avatar-estado').style.display = 'inline-block';
+    document.getElementById('avatar-estado').textContent = '"' + estado + '"';
+
+    chat.style.display = 'block';
+
+    console.log('Nombre de usuario:', nombreUsuario);
+    console.log('Socket ID:', socket.id);
+    socket.emit('add user', nombreUsuario);
+    socket.emit('joinRoom', "sala_general");
 }
+    
+
+        function joinRoom(roomName) {
+        socket.emit('joinRoom', roomName);
+        }
 
 
+        //ENVIAR UN MENSAJE
+        function enviar() {
+            const mensaje = document.getElementById('cajaTexto').value;
 
-    function sendMessage() {
-    const usernameInput = document.getElementById('usernameInput');
-    const messageInput = document.getElementById('messageInput');
-    const username = usernameInput.value;
-    const message = messageInput.value;
+            if (mensaje !== '') {
+                console.log('Mensaje enviado:', mensaje);
+                socket.emit('mensaje', mensaje);
+                cajaTextoInput.value = '';
+                socket.emit('dejarEscribir', {});
+            }
+        }
 
-    if (!username.trim()) {
-      alert('Por favor, introduce tu nombre de usuario.');
-      return;
-    }
+        //ENVIAR EL NICK AL PRESIONAR EL ENTER
+        nombreUsuario.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                enviarNick();
+            }
+        });
 
-    if (!message.trim()) {
-      alert('Por favor, introduce un mensaje.');
-      return;
-    }
 
-    const chatMessages = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.innerText = `${message}`;
-    div.classList.add('messageme'); 
-    chatMessages.appendChild(div);
-    socket.emit('chatMessage', { username: username, message: message });
-    messageInput.value = '';
-  }
+        //ENVIAR MENSAJE AL PRESIONAR ENTER
+        cajaTextoInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                enviar();
+            } else {
+                usuarioEscribiendo();
+            }
+        });
 
-    function sendSticker(sticker) {
-      appendSticker(sticker);
-      socket.emit('sticker', { sticker: sticker});
-    }
 
-    socket.on('loadMessages', (messages) => {
-  const chatMessages = document.getElementById('chat-messages');
-  chatMessages.innerHTML = ''; // Limpiar mensajes anteriores
-  messages.forEach(message => {
-    if (message.message) {
-      appendMessage(message);
-    } else if (message.sticker) {
-      appendSticker(message);
-    }
-  });
-});
+        //MENSEJE DE "x esta escribiendo"
+        function usuarioEscribiendo() {
 
-function appendMessage(message) {
-  const chatMessages = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.innerText = `${message.username}: ${message.message}`;
-  chatMessages.appendChild(div);
-}
+            if (event.key === 'Enter') {
+                return;
+            }
+            clearTimeout(typingTimer);
+            console.log('Escribiendo...');
+            socket.emit('escribiendo', {});
 
-function appendSticker(stickerData) {
-  const chatMessages = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.classList.add('message'); // Agregar la clase 'message' al div
-  const img = document.createElement('img');
-  img.src = stickerData;
-  img.alt = 'Sticker';
-  div.appendChild(img);
-  chatMessages.appendChild(div);
-}
-    function updateUserList(userList) {
-      const userListElement = document.getElementById('userList');
-      userListElement.innerHTML = '';
-      userList.forEach(user => {
-        const li = document.createElement('li');
-        li.textContent = user;
-        userListElement.appendChild(li);
-      });
-    }
+            typingTimer = setTimeout(() => {
+                console.log('Se ha dejado de escribir.');
+                socket.emit('dejarEscribir', {}); // Señal de que ha dejado de escribir
+            }, 2500);
+        }
 
-    function uploadFile() {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
-      // Aquí puedes agregar la lógica para subir el archivo
-      console.log('Archivo seleccionado:', file.name);
-    }
+        //MENSAJES
 
-    document.getElementById('createRoomForm').addEventListener('submit', function(event) {
+        socket.on('mensaje', (datos) => {
+            const claseMensaje = datos.emisorId === socket.id ? 'mensaje-propio' : 'mensaje-otro';
+
+            const elementoMensaje = document.createElement('div');
+            elementoMensaje.classList.add('mensaje', claseMensaje);
+
+            const nombreUsuarioElemento = document.createElement('span');
+            nombreUsuarioElemento.textContent = datos.emisor + ': ';
+            nombreUsuarioElemento.classList.add('nombre-usuario');
+            elementoMensaje.appendChild(nombreUsuarioElemento);
+
+            const mensajeElemento = document.createElement('span');
+            mensajeElemento.textContent = datos.mensaje;
+            elementoMensaje.appendChild(mensajeElemento);
+
+            mensajesChatContenedor.appendChild(elementoMensaje);
+            scrollMensajesChat();
+        });
+
+
+        //MENSAJE AL SERVIDOR DE "x esta escribiendo"
+        socket.on('escribiendo', (datos) => {
+            if(datos.emisorId != socket.id){
+                escribiendoMensaje.textContent = datos.emisor + ' está escribiendo...';
+            }
+            
+        });
+
+        //SE DEJA DE ESCRIBIR
+
+        socket.on('dejarEscribir', () => {
+            escribiendoMensaje.textContent = '';
+        });
+
+        //SCROLL
+        function scrollMensajesChat() {
+            const mensajesChatContenedor = document.getElementById('mensajesChat');
+            mensajesChatContenedor.scrollTop = mensajesChatContenedor.scrollHeight;
+        }
+
+        //FUNCION PARA ENVIAR EL EMOJI
+        function enviarEmoji(emoji) {
+            socket.emit('imagen', emoji);
+            console.log('Emoji enviado:', emoji);
+        }
+
+        //EMOJIS
+        socket.on('imagen', (datos) => {
+            const claseMensaje = datos.emisorId === socket.id ? 'mensaje-propio' : 'mensaje-otro';
+
+            const elementoMensaje = document.createElement('div');
+            elementoMensaje.classList.add('mensaje', claseMensaje);
+
+            const nombreUsuarioElemento = document.createElement('span');
+            nombreUsuarioElemento.textContent = datos.emisor + ': ';
+            nombreUsuarioElemento.classList.add('nombre-usuario');
+            elementoMensaje.appendChild(nombreUsuarioElemento);
+
+            const imagen = document.createElement('img');
+            imagen.src = datos.imagenData;
+            elementoMensaje.appendChild(imagen);
+
+            mensajesChatContenedor.appendChild(elementoMensaje);
+            scrollMensajesChat();
+        });
+
+        //NUMERO DE USUARIOS CONECTADOS
+        socket.on('updateUsers', (users) => {
+            usuariosConectadosElemento.innerText = 'Usuarios Conectados: ' + users.length;
+        });
+
+
+        //APARTADO DE FILES
+        const uploadButton = document.getElementById('uploadButton');
+        const fileInput = document.getElementById('sampleFile');
+        const endpoint = 'http://localhost/upload';
+        uploadButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('sampleFile', file);
+            fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(data => {
+                    console.log(data);
+                    alert('File uploaded successfully!');
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error uploading file');
+                });
+        });
+
+
+        //MENSAJE DE DESCONEXION
+        socket.on('user disconnected', (username) => {
+            const mensajeDesconexion = document.createElement('div');
+            mensajeDesconexion.classList.add('mensajeDesconexion');
+            // Crear un elemento span para el nombre del usuario
+            const nombreUsuarioSpan = document.createElement('span');
+            nombreUsuarioSpan.textContent = username;
+            nombreUsuarioSpan.style.color = 'blue';
+
+            const restoTextoSpan = document.createElement('span');
+            restoTextoSpan.textContent = ' se ha desconectado';
+
+            mensajeDesconexion.appendChild(nombreUsuarioSpan);
+            mensajeDesconexion.appendChild(restoTextoSpan);
+
+            desconexion.appendChild(mensajeDesconexion);
+
+            scrollMensajesChat();
+
+            setTimeout(() => {
+                desconexion.style.transition = 'opacity 1s';
+                desconexion.style.opacity = '0';
+
+                setTimeout(() => {
+                    desconexion.innerHTML = '';
+                    desconexion.style.opacity = '1';
+                }, 1000);
+            }, 5000);
+        });
+
+        document.getElementById('createRoomForm').addEventListener('submit', function(event) {
   event.preventDefault(); // Evitar el comportamiento predeterminado de recargar la página
   
   const newRoomName = document.getElementById('newRoomName').value.trim(); // Obtener el nombre de la sala ingresado por el usuario
@@ -241,11 +484,7 @@ function appendSticker(stickerData) {
     alert('Por favor, introduce un nombre para la sala.');
   }
 });
-
-// Escuchar el evento de error de creación de sala
-socket.on('roomCreationError', function(errorMessage) {
-  alert(errorMessage); // Mostrar un mensaje de error al usuario
-});
-  </script>
+    </script>
 </body>
+
 </html>
